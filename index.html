@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>9ROUTE — Know Your Route</title>
+<meta name="description" content="9ROUTE — Purpose-driven apparel for those moving up. Fort Worth, TX.">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --yellow:   #F5C200;
+    --black:    #0A0A0A;
+    --offblack: #111111;
+    --white:    #FFFFFF;
+    --gray:     #888888;
+    --light:    #CCCCCC;
+    --blue:     #5B9BD5;
+    --red:      #CC2936;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  img { display: block; width: 100%; height: 100%; object-fit: cover; }
+  a { text-decoration: none; color: inherit; }
+
+  /* ── PHOTO PLACEHOLDERS ─────────────────────────────────────────── */
+  .ph { background: #1a1a1a; position: relative; }
+  .ph::after {
+    content: attr(data-photo);
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #333;
+    text-align: center;
+    padding: 20px;
+    line-height: 1.6;
+  }
+
+  /* ── NAV ─────────────────────────────────────────────────────────── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 40px;
+    background: var(--yellow);
+    transition: box-shadow 0.3s;
+  }
+  nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.2); }
+
+  .nav-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    letter-spacing: 0.1em;
+    color: var(--black);
+  }
+
+  .nav-links { display: flex; gap: 36px; list-style: none; }
+  .nav-links a {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--black);
+    transition: opacity 0.2s;
+  }
+  .nav-links a:hover { opacity: 0.5; }
+
+  .nav-cta {
+    background: var(--black);
+    color: var(--yellow);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 11px 24px;
+    border-radius: 40px;
+    transition: opacity 0.2s;
+  }
+  .nav-cta:hover { opacity: 0.82; }
+
+  /* ── HERO ─────────────────────────────────────────────────────────── */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: var(--yellow);
+    padding-top: 74px;
+    overflow: hidden;
+  }
+
+  /* Moving visual: animated geometric lines on yellow */
+  .hero-canvas {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+  }
+
+  .hero-canvas svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  /* Animated stripes */
+  .stripe {
+    fill: none;
+    stroke: rgba(0,0,0,0.055);
+    stroke-width: 1.5;
+  }
+
+  .stripe-1 { animation: drift1 18s ease-in-out infinite; }
+  .stripe-2 { animation: drift2 22s ease-in-out infinite; }
+  .stripe-3 { animation: drift3 16s ease-in-out infinite; }
+  .stripe-4 { animation: drift4 20s ease-in-out infinite; }
+  .stripe-5 { animation: drift5 25s ease-in-out infinite; }
+
+  @keyframes drift1 {
+    0%,100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-40px) rotate(0.5deg); }
+  }
+  @keyframes drift2 {
+    0%,100% { transform: translateX(0) rotate(0deg); }
+    50% { transform: translateX(30px) rotate(-0.3deg); }
+  }
+  @keyframes drift3 {
+    0%,100% { transform: translateY(0) translateX(0); }
+    33% { transform: translateY(20px) translateX(-20px); }
+    66% { transform: translateY(-30px) translateX(15px); }
+  }
+  @keyframes drift4 {
+    0%,100% { transform: skewX(0deg) translateY(0); }
+    50% { transform: skewX(0.5deg) translateY(25px); }
+  }
+  @keyframes drift5 {
+    0%,100% { transform: translateX(0) rotate(0); }
+    50% { transform: translateX(-40px) rotate(-0.4deg); }
+  }
+
+  /* Floating dot grid */
+  .dot-field {
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(circle, rgba(0,0,0,0.07) 1px, transparent 1px);
+    background-size: 36px 36px;
+    animation: dotDrift 30s linear infinite;
+  }
+
+  @keyframes dotDrift {
+    from { background-position: 0 0; }
+    to { background-position: 72px 72px; }
+  }
+
+  /* Pulsing circle accent */
+  .hero-pulse {
+    position: absolute;
+    bottom: -120px;
+    right: -120px;
+    width: 600px;
+    height: 600px;
+    border-radius: 50%;
+    border: 2px solid rgba(0,0,0,0.06);
+    animation: pulse 8s ease-in-out infinite;
+  }
+  .hero-pulse-2 {
+    position: absolute;
+    bottom: -200px;
+    right: -200px;
+    width: 800px;
+    height: 800px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(0,0,0,0.04);
+    animation: pulse 8s ease-in-out infinite 1.5s;
+  }
+  .hero-pulse-3 {
+    position: absolute;
+    bottom: -300px;
+    right: -300px;
+    width: 1000px;
+    height: 1000px;
+    border-radius: 50%;
+    border: 1px solid rgba(0,0,0,0.025);
+    animation: pulse 8s ease-in-out infinite 3s;
+  }
+
+  @keyframes pulse {
+    0%,100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.04); opacity: 0.7; }
+  }
+
+  .hero-text-block {
+    position: relative;
+    z-index: 2;
+    padding: 48px 40px 32px;
+  }
+
+  .hero-eyebrow {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--black);
+    opacity: 0.5;
+    margin-bottom: 14px;
+  }
+
+  .hero-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(80px, 13vw, 180px);
+    line-height: 0.88;
+    letter-spacing: 0.01em;
+    color: var(--black);
+    margin-bottom: 28px;
+  }
+
+  .hero-sub {
+    font-size: 16px;
+    font-weight: 400;
+    color: var(--black);
+    opacity: 0.65;
+    letter-spacing: 0.02em;
+    max-width: 440px;
+    margin-bottom: 40px;
+    line-height: 1.65;
+  }
+
+  .hero-actions { display: flex; gap: 14px; flex-wrap: wrap; }
+
+  .btn-primary {
+    background: var(--black);
+    color: var(--yellow);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    padding: 16px 36px;
+    border-radius: 40px;
+    transition: opacity 0.2s;
+    display: inline-block;
+  }
+  .btn-primary:hover { opacity: 0.82; }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--black);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    padding: 16px 36px;
+    border: 2px solid rgba(0,0,0,0.25);
+    border-radius: 40px;
+    transition: border-color 0.2s;
+    display: inline-block;
+  }
+  .btn-ghost:hover { border-color: var(--black); }
+
+  .hero-image-block { flex: 1; min-height: 420px; position: relative; z-index: 2; }
+  .hero-image-block .ph { width: 100%; height: 100%; min-height: 420px; }
+
+  /* ── MARQUEE ─────────────────────────────────────────────────────── */
+  .marquee-wrap {
+    background: var(--black);
+    color: var(--yellow);
+    padding: 14px 0;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+  .marquee-track { display: inline-flex; animation: marquee 22s linear infinite; }
+  .marquee-item { font-family: 'Bebas Neue', sans-serif; font-size: 14px; letter-spacing: 0.2em; padding: 0 40px; }
+  @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+  /* ── ABOUT ───────────────────────────────────────────────────────── */
+  .about { background: var(--offblack); display: grid; grid-template-columns: 1fr 1fr; }
+  .about-visual { height: 600px; }
+  .about-text {
+    padding: 80px 60px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background: var(--yellow);
+  }
+
+  .section-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: rgba(0,0,0,0.45);
+    margin-bottom: 16px;
+  }
+
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(42px, 6vw, 72px);
+    line-height: 1;
+    letter-spacing: 0.02em;
+    color: var(--black);
+    margin-bottom: 24px;
+  }
+
+  .section-body {
+    font-size: 15px;
+    font-weight: 400;
+    color: rgba(0,0,0,0.65);
+    line-height: 1.75;
+    max-width: 520px;
+    margin-bottom: 40px;
+  }
+
+  .him-her-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+  .identity-card {
+    border: 2px solid rgba(0,0,0,0.12);
+    background: rgba(0,0,0,0.06);
+    padding: 22px;
+    border-radius: 4px;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .identity-card:hover { border-color: rgba(0,0,0,0.3); background: rgba(0,0,0,0.1); }
+
+  .identity-card h3 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    letter-spacing: 0.1em;
+    color: var(--black);
+    margin-bottom: 10px;
+  }
+
+  .identity-card ul { list-style: none; display: flex; flex-direction: column; gap: 4px; }
+  .identity-card ul li { font-size: 12px; color: rgba(0,0,0,0.55); letter-spacing: 0.06em; line-height: 1.6; }
+  .identity-card ul li strong { color: var(--black); font-weight: 600; }
+
+  /* ── COLLECTION ──────────────────────────────────────────────────── */
+  .collection { background: var(--black); padding: 100px 40px; }
+
+  .collection-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 48px;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .collection-header .section-label { color: var(--gray); }
+  .collection-header .section-title { color: var(--white); margin-bottom: 0; }
+
+  .btn-ghost-white {
+    background: transparent;
+    color: var(--white);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    padding: 12px 24px;
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 40px;
+    transition: border-color 0.2s, color 0.2s;
+    white-space: nowrap;
+    display: inline-block;
+  }
+  .btn-ghost-white:hover { border-color: var(--yellow); color: var(--yellow); }
+
+  .product-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
+  .product-card { position: relative; overflow: hidden; cursor: pointer; background: #111; }
+  .product-card:first-child { grid-column: span 2; }
+  .product-card .card-img { width: 100%; aspect-ratio: 4/5; transition: transform 0.6s ease; }
+  .product-card:first-child .card-img { aspect-ratio: 8/5; }
+  .product-card:hover .card-img { transform: scale(1.04); }
+  .card-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.82) 0%, transparent 50%); opacity: 0; transition: opacity 0.3s; }
+  .product-card:hover .card-overlay { opacity: 1; }
+  .card-info { position: absolute; bottom: 0; left: 0; right: 0; padding: 24px; opacity: 0; transform: translateY(8px); transition: opacity 0.3s, transform 0.3s; }
+  .product-card:hover .card-info { opacity: 1; transform: translateY(0); }
+  .card-name { font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 0.08em; color: var(--white); margin-bottom: 4px; }
+  .card-tag { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--yellow); }
+
+  /* ── EDITORIAL ───────────────────────────────────────────────────── */
+  .editorial { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; background: var(--black); }
+  .ed-item { aspect-ratio: 2/3; overflow: hidden; position: relative; }
+  .ed-item .ed-img { width: 100%; height: 100%; transition: transform 0.5s ease; }
+  .ed-item:hover .ed-img { transform: scale(1.03); }
+
+  /* ── MISSION ─────────────────────────────────────────────────────── */
+  .mission {
+    background: var(--white);
+    color: var(--black);
+    text-align: center;
+    padding: 120px 40px;
+  }
+  .mission .section-label { color: #999; }
+  .mission .section-title { color: var(--black); margin: 0 auto 32px; }
+
+  .mission-quote {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(36px, 6vw, 80px);
+    line-height: 1;
+    letter-spacing: 0.03em;
+    color: var(--black);
+    max-width: 900px;
+    margin: 0 auto 32px;
+  }
+
+  .mission-body {
+    font-size: 16px;
+    font-weight: 300;
+    color: #555;
+    max-width: 520px;
+    margin: 0 auto 48px;
+    line-height: 1.75;
+  }
+
+  .mission .btn-dark {
+    background: var(--black);
+    color: var(--white);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    padding: 16px 36px;
+    border-radius: 40px;
+    display: inline-block;
+    transition: opacity 0.2s;
+  }
+  .mission .btn-dark:hover { opacity: 0.8; }
+
+  /* ── KIDS ────────────────────────────────────────────────────────── */
+  .kids { background: var(--offblack); display: grid; grid-template-columns: 1fr 1fr; min-height: 560px; }
+  .kids-text {
+    padding: 80px 60px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .kids-text .section-label { color: var(--gray); }
+  .kids-text .section-title { color: var(--white); }
+  .kids-text .section-body { color: var(--light); }
+  .kids-photos { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; }
+  .kids-photo { aspect-ratio: 1; overflow: hidden; }
+  .kids-photo .kp-img { width: 100%; height: 100%; transition: transform 0.6s; }
+  .kids-photo:hover .kp-img { transform: scale(1.04); }
+  .kids-photo.wide { grid-column: span 2; aspect-ratio: 2/1; }
+
+  /* ── YELLOW STRIP ────────────────────────────────────────────────── */
+  .yellow-strip {
+    background: var(--yellow);
+    padding: 60px 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 40px;
+    flex-wrap: wrap;
+  }
+  .yellow-strip-text {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(32px, 5vw, 60px);
+    line-height: 1;
+    letter-spacing: 0.03em;
+    color: var(--black);
+  }
+
+  /* ── DREAM BANNER ────────────────────────────────────────────────── */
+  .dream { position: relative; height: 440px; overflow: hidden; }
+  .dream-bg { position: absolute; inset: 0; }
+  .dream-over {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+    text-align: center;
+    padding: 40px;
+  }
+  .dream-text {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(48px, 8vw, 100px);
+    line-height: 1;
+    letter-spacing: 0.04em;
+    color: var(--white);
+  }
+  .dream-sub {
+    font-size: 11px;
+    letter-spacing: 0.26em;
+    text-transform: uppercase;
+    color: var(--light);
+    margin-top: -8px;
+  }
+
+  /* ── FOOTER ──────────────────────────────────────────────────────── */
+  footer {
+    background: var(--yellow);
+    padding: 60px 40px 40px;
+    border-top: 3px solid var(--black);
+  }
+  .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 48px; margin-bottom: 48px; padding-bottom: 40px; border-bottom: 1px solid rgba(0,0,0,0.15); }
+  .footer-brand .brand-name { font-family: 'Bebas Neue', sans-serif; font-size: 36px; letter-spacing: 0.1em; margin-bottom: 12px; color: var(--black); }
+  .footer-brand p { font-size: 13px; font-weight: 400; color: rgba(0,0,0,0.55); line-height: 1.65; max-width: 280px; }
+  .footer-col h4 { font-size: 10px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(0,0,0,0.4); margin-bottom: 20px; }
+  .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  .footer-col ul li a { font-size: 13px; font-weight: 500; color: var(--black); transition: opacity 0.2s; }
+  .footer-col ul li a:hover { opacity: 0.5; }
+  .footer-bottom { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+  .footer-bottom p { font-size: 11px; font-weight: 500; color: rgba(0,0,0,0.4); letter-spacing: 0.06em; }
+
+  /* ── RESPONSIVE ──────────────────────────────────────────────────── */
+  @media (max-width: 768px) {
+    nav { padding: 16px 20px; }
+    .nav-links { display: none; }
+    .hero-text-block { padding: 40px 20px 24px; }
+    .about { grid-template-columns: 1fr; }
+    .about-visual { height: 360px; }
+    .about-text { padding: 48px 24px; }
+    .collection { padding: 72px 20px; }
+    .product-grid { grid-template-columns: 1fr 1fr; }
+    .product-card:first-child { grid-column: span 2; }
+    .editorial { grid-template-columns: 1fr; }
+    .ed-item { aspect-ratio: 3/2; }
+    .mission { padding: 72px 24px; }
+    .kids { grid-template-columns: 1fr; }
+    .kids-text { padding: 48px 24px; }
+    .him-her-grid { grid-template-columns: 1fr; }
+    .footer-grid { grid-template-columns: 1fr; gap: 32px; }
+    .yellow-strip { padding: 40px 24px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="nav">
+  <div class="nav-logo">9 ↑ ROUTE</div>
+  <ul class="nav-links">
+    <li><a href="#collection">Collection</a></li>
+    <li><a href="#mission">Mission</a></li>
+    <li><a href="#kids">Kids</a></li>
+    <li><a href="#about">About</a></li>
+  </ul>
+  <a class="nav-cta" href="#collection">Shop Now</a>
+</nav>
+
+<!-- HERO — yellow bg with animated moving visual -->
+<div class="hero">
+
+  <!-- Moving background visual -->
+  <div class="hero-canvas">
+    <div class="dot-field"></div>
+    <div class="hero-pulse"></div>
+    <div class="hero-pulse-2"></div>
+    <div class="hero-pulse-3"></div>
+    <svg viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+      <!-- Diagonal lines drifting slowly -->
+      <line class="stripe stripe-1" x1="-200" y1="0" x2="800" y2="900"/>
+      <line class="stripe stripe-2" x1="100" y1="0" x2="1100" y2="900"/>
+      <line class="stripe stripe-3" x1="400" y1="0" x2="1400" y2="900"/>
+      <line class="stripe stripe-4" x1="700" y1="0" x2="1700" y2="900"/>
+      <line class="stripe stripe-5" x1="-500" y1="0" x2="500" y2="900"/>
+      <!-- Horizontal accent lines -->
+      <line class="stripe stripe-2" x1="0" y1="250" x2="1440" y2="220" stroke-width="1"/>
+      <line class="stripe stripe-4" x1="0" y1="550" x2="1440" y2="580" stroke-width="0.8"/>
+      <!-- Large arch shape -->
+      <path class="stripe stripe-3" d="M -100 900 Q 720 -200 1540 900" stroke-width="1.2"/>
+      <path class="stripe stripe-1" d="M -100 900 Q 720 100 1540 900" stroke-width="0.8"/>
+      <!-- Corner geometric -->
+      <rect class="stripe stripe-5" x="1100" y="-100" width="400" height="400" rx="0" transform="rotate(15 1300 100)"/>
+      <rect class="stripe stripe-2" x="1150" y="-80" width="320" height="320" rx="0" transform="rotate(15 1310 80)"/>
+    </svg>
+  </div>
+
+  <div class="hero-text-block">
+    <p class="hero-eyebrow">Fort Worth, TX &nbsp;·&nbsp; Est. 2025</p>
+    <h1 class="hero-title">KNOW<br>YOUR<br>ROUTE ↑</h1>
+    <p class="hero-sub">Purpose-driven apparel for those who know where they're headed. Wear your identity. Live your definition.</p>
+    <div class="hero-actions">
+      <a class="btn-primary" href="#collection">Shop the Collection</a>
+      <a class="btn-ghost" href="#mission">Our Mission</a>
+    </div>
+  </div>
+
+  <div class="hero-image-block">
+    <!--
+      PHOTO INSTRUCTIONS:
+      1. Create an "images" folder in your GitHub repo
+      2. Upload all photos into it
+      3. For each .ph element, add to its style:
+         background-image: url('./images/FILENAME.jpg'); background-size: cover; background-position: center;
+    -->
+    <div class="ph" style="width:100%;height:100%;min-height:480px;" data-photo="Hero photo — recommended: 1I4A6949.jpg or 1I4A6910.jpg (railroad walking shot)"></div>
+  </div>
+</div>
+
+<!-- MARQUEE — black bg, yellow text -->
+<div class="marquee-wrap">
+  <div class="marquee-track">
+    <span class="marquee-item">KNOW YOUR ROUTE</span>
+    <span class="marquee-item">·</span>
+    <span class="marquee-item">HUSTLER · ICONIC · MEASURED</span>
+    <span class="marquee-item">·</span>
+    <span class="marquee-item">HUMBLE · INTENTIONAL · MOTIVATED</span>
+    <span class="marquee-item">·</span>
+    <span class="marquee-item">AUTHENTIC · ENERGIZED · STRONG</span>
+    <span class="marquee-item">·</span>
+    <span class="marquee-item">TRUST THE TRAINING</span>
+    <span class="marquee-item">·</span>
+    <span class="marquee-item">9ROUTE LLC · FORT WORTH TX</span>
+    <span class="marquee-item">·</span>
+    <span class="marquee-item">KNOW YOUR ROUTE</span>
+    <span class="marquee-item">·</span>
+    <span class="marquee-item">HUSTLER · ICONIC · MEASURED</span>
+    <span class="marquee-item">·</span>
+    <span class="marquee-item">HUMBLE · INTENTIONAL · MOTIVATED</span>
+    <span class="marquee-item">·</span>
+    <span class="marquee-item">AUTHENTIC · ENERGIZED · STRONG</span>
+    <span class="marquee-item">·</span>
+    <span class="marquee-item">TRUST THE TRAINING</span>
+    <span class="marquee-item">·</span>
+    <span class="marquee-item">9ROUTE LLC · FORT WORTH TX</span>
+    <span class="marquee-item">·</span>
+  </div>
+</div>
+
+<!-- ABOUT — yellow panel, original copy -->
+<div class="about" id="about">
+  <div class="about-visual ph" data-photo="About photo — recommended: 1I4A6976.jpg (three people, railroad tracks)"></div>
+  <div class="about-text">
+    <p class="section-label">Who We Are</p>
+    <h2 class="section-title">BUILT ON IDENTITY</h2>
+    <p class="section-body">9ROUTE is more than a brand. It's a declaration. Every shirt carries a definition — not of what you wear, but of who you are. We make apparel for people who move with purpose and wear their values out loud.</p>
+    <div class="him-her-grid">
+      <div class="identity-card">
+        <h3>HIM</h3>
+        <ul>
+          <li><strong>H</strong>ustler · <strong>H</strong>umble</li>
+          <li><strong>I</strong>conic · <strong>I</strong>ntentional</li>
+          <li><strong>M</strong>easured · <strong>M</strong>otivated</li>
+        </ul>
+      </div>
+      <div class="identity-card">
+        <h3>HER</h3>
+        <ul>
+          <li><strong>H</strong>onest &amp; <strong>H</strong>er Own</li>
+          <li><strong>E</strong>nergized</li>
+          <li><strong>R</strong>eal &amp; Strong</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- COLLECTION -->
+<section class="collection" id="collection">
+  <div class="collection-header">
+    <div>
+      <p class="section-label">The Drop</p>
+      <h2 class="section-title">CURRENT COLLECTION</h2>
+    </div>
+    <a class="btn-ghost-white" href="#">View All</a>
+  </div>
+  <div class="product-grid">
+    <div class="product-card">
+      <div class="card-img ph" data-photo="1I4A6924.jpg or 1I4A6941.JPG — HIM tee on tracks"></div>
+      <div class="card-overlay"></div>
+      <div class="card-info">
+        <div class="card-name">HIM TEE — HUSTLER ICONIC MEASURED</div>
+        <div class="card-tag">Adult · Black · 100% Cotton</div>
+      </div>
+    </div>
+    <div class="product-card">
+      <div class="card-img ph" data-photo="1I4A6949.jpg — HER tee, three people walking"></div>
+      <div class="card-overlay"></div>
+      <div class="card-info">
+        <div class="card-name">HER TEE — AUTHENTIC ENERGIZED STRONG</div>
+        <div class="card-tag">Adult · Black · 100% Cotton</div>
+      </div>
+    </div>
+    <div class="product-card">
+      <div class="card-img ph" data-photo="1I4A6844.jpg — Trust the Training"></div>
+      <div class="card-overlay"></div>
+      <div class="card-info">
+        <div class="card-name">TRUST THE TRAINING</div>
+        <div class="card-tag">Adult · Black</div>
+      </div>
+    </div>
+    <div class="product-card">
+      <div class="card-img ph" data-photo="PXL_20251017_221431894.jpg — Call Me Dofus packaged"></div>
+      <div class="card-overlay"></div>
+      <div class="card-info">
+        <div class="card-name">CALL ME DOFUS</div>
+        <div class="card-tag">Adult · Black</div>
+      </div>
+    </div>
+    <div class="product-card">
+      <div class="card-img ph" data-photo="1I4A6853.jpg — Kids white logo tee"></div>
+      <div class="card-overlay"></div>
+      <div class="card-info">
+        <div class="card-name">KIDS LOGO TEE — WHITE</div>
+        <div class="card-tag">Youth · White</div>
+      </div>
+    </div>
+    <div class="product-card">
+      <div class="card-img ph" data-photo="1I4A7128.jpg — Kids crimson logo tee"></div>
+      <div class="card-overlay"></div>
+      <div class="card-info">
+        <div class="card-name">KIDS LOGO TEE — CRIMSON</div>
+        <div class="card-tag">Youth · Red</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EDITORIAL -->
+<div class="editorial">
+  <div class="ed-item"><div class="ed-img ph" data-photo="1I4A6990.jpg — three on rocks"></div></div>
+  <div class="ed-item"><div class="ed-img ph" data-photo="1I4A7000.jpg — wide rocks shot"></div></div>
+  <div class="ed-item"><div class="ed-img ph" data-photo="1I4A6882.jpg — DREAM sign"></div></div>
+</div>
+
+<!-- MISSION — white bg, original copy -->
+<section class="mission" id="mission">
+  <p class="section-label">Our Purpose</p>
+  <div class="mission-quote">EVERY ROUTE LEADS SOMEWHERE. YOURS LEADS UP.</div>
+  <p class="mission-body">The 9 route is a go route in football — straight up the field, full speed, no hesitation. We built 9ROUTE for people who move the same way.</p>
+  <a class="btn-dark" href="#collection">Shop the Collection</a>
+</section>
+
+<!-- KIDS — original copy -->
+<div class="kids" id="kids">
+  <div class="kids-text">
+    <p class="section-label">Next Generation</p>
+    <h2 class="section-title">ROUTE STARTS EARLY</h2>
+    <p class="section-body" style="margin-bottom:32px;">Identity isn't something you find. It's something you carry. Our kids line brings the same energy, the same purpose — built for the next generation of route runners.</p>
+    <a class="btn-primary" href="#collection" style="align-self:flex-start;background:var(--yellow);color:var(--black);">Shop Kids</a>
+  </div>
+  <div class="kids-photos">
+    <div class="kids-photo"><div class="kp-img ph" data-photo="1I4A6853.jpg — kid white tee"></div></div>
+    <div class="kids-photo"><div class="kp-img ph" data-photo="1I4A7128.jpg — kid red tee"></div></div>
+    <div class="kids-photo wide"><div class="kp-img ph" data-photo="1I4A6882.jpg — kids at DREAM sign"></div></div>
+  </div>
+</div>
+
+<!-- YELLOW STRIP -->
+<div class="yellow-strip">
+  <div class="yellow-strip-text">DREAM.<br>DEFINE.<br>MOVE.</div>
+  <a class="btn-primary" href="#collection">Shop 9ROUTE</a>
+</div>
+
+<!-- DREAM BANNER -->
+<div class="dream">
+  <div class="dream-bg ph" data-photo="1I4A6882.jpg — DREAM sign backdrop"></div>
+  <div class="dream-over">
+    <div class="dream-text">KNOW YOUR ROUTE ↑</div>
+    <p class="dream-sub">9Route · Fort Worth, Texas · Est. 2025</p>
+    <a class="btn-primary" href="#collection">Shop Now</a>
+  </div>
+</div>
+
+<!-- FOOTER — yellow bg -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="brand-name">9 ↑ ROUTE</div>
+      <p>Purpose-driven apparel for those who know their route. Fort Worth, Texas · Est. 2025.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Shop</h4>
+      <ul>
+        <li><a href="#">HIM Collection</a></li>
+        <li><a href="#">HER Collection</a></li>
+        <li><a href="#">Kids</a></li>
+        <li><a href="#">All Products</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>9ROUTE</h4>
+      <ul>
+        <li><a href="#">Our Mission</a></li>
+        <li><a href="#">Contact</a></li>
+        <li><a href="https://www.linkedin.com/in/daron-lawrence-progress2021" target="_blank">Founder</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2025 9ROUTE LLC &nbsp;·&nbsp; Fort Worth, Texas &nbsp;·&nbsp; File No. 0806226045</p>
+    <p>Moving forward ↑</p>
+  </div>
+</footer>
+
+<script>
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 60);
+  });
+</script>
+
+</body>
+</html>
