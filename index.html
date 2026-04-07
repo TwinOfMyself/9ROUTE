@@ -68,10 +68,13 @@
   nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.2); }
 
   .nav-logo {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 28px;
-    letter-spacing: 0.1em;
-    color: var(--black);
+    display: flex;
+    align-items: center;
+  }
+  .nav-logo img {
+    height: 44px;
+    width: auto;
+    display: block;
   }
 
   .nav-links { display: flex; gap: 36px; list-style: none; }
@@ -552,7 +555,9 @@
 
 <!-- NAV -->
 <nav id="nav">
-  <div class="nav-logo">9 ↑ ROUTE</div>
+  <div class="nav-logo">
+    <a href="#"><img src="./images/9_route_black_letters1.jpg" alt="9 Route"></a>
+  </div>
   <ul class="nav-links">
     <li><a href="#collection">Collection</a></li>
     <li><a href="#mission">Mission</a></li>
