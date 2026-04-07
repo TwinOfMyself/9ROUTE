@@ -68,10 +68,13 @@
   nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.2); }
 
   .nav-logo {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 28px;
-    letter-spacing: 0.1em;
-    color: var(--black);
+    display: flex;
+    align-items: center;
+  }
+  .nav-logo img {
+    height: 56px;
+    width: auto;
+    display: block;
   }
 
   .nav-links { display: flex; gap: 36px; list-style: none; }
@@ -101,6 +104,7 @@
   /* ── HERO ─────────────────────────────────────────────────────────── */
   .hero {
     position: relative;
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
     background: var(--yellow);
@@ -551,7 +555,9 @@
 
 <!-- NAV -->
 <nav id="nav">
-  <div class="nav-logo">9 ↑ ROUTE</div>
+  <div class="nav-logo">
+    <a href="#"><img src="./images/9_route_logo.png" alt="9 Route"></a>
+  </div>
   <ul class="nav-links">
     <li><a href="#collection">Collection</a></li>
     <li><a href="#mission">Mission</a></li>
@@ -688,7 +694,7 @@
       </div>
     </div>
     <div class="product-card">
-      <div class="card-img" style="background-image:url('./images/1I4A6949.jpg');background-size:cover;background-position:center;aspect-ratio:4/5;"></div>
+      <div class="card-img" style="background-image:url('./images/1I4A7128.jpg');background-size:cover;background-position:center;aspect-ratio:4/5;"></div>
       <div class="card-overlay"></div>
       <div class="card-info">
         <div class="card-name">HER TEE — AUTHENTIC ENERGIZED STRONG</div>
@@ -696,7 +702,7 @@
       </div>
     </div>
     <div class="product-card">
-      <div class="card-img" style="background-image:url('./images/1I4A6844.jpg');background-size:cover;background-position:center;aspect-ratio:4/5;"></div>
+      <div class="card-img" style="background-image:url('./images/1I4A6949.jpg');background-size:cover;background-position:center;aspect-ratio:4/5;"></div>
       <div class="card-overlay"></div>
       <div class="card-info">
         <div class="card-name">TRUST THE TRAINING</div>
@@ -704,7 +710,7 @@
       </div>
     </div>
     <div class="product-card">
-      <div class="card-img" style="background-image:url('./images/1I4A6853.jpg');background-size:cover;background-position:center;aspect-ratio:4/5;"></div>
+      <div class="card-img" style="background-image:url('./images/1I4A6844.jpg');background-size:cover;background-position:center;aspect-ratio:4/5;"></div>
       <div class="card-overlay"></div>
       <div class="card-info">
         <div class="card-name">KIDS LOGO TEE — WHITE</div>
@@ -712,7 +718,7 @@
       </div>
     </div>
     <div class="product-card">
-      <div class="card-img" style="background-image:url('./images/1I4A7128.jpg');background-size:cover;background-position:center;aspect-ratio:4/5;"></div>
+      <div class="card-img" style="background-image:url('./images/1I4A6853.jpg');background-size:cover;background-position:center;aspect-ratio:4/5;"></div>
       <div class="card-overlay"></div>
       <div class="card-info">
         <div class="card-name">KIDS LOGO TEE — CRIMSON</div>
@@ -746,8 +752,8 @@
     <a class="btn-primary" href="#collection" style="align-self:flex-start;background:var(--yellow);color:var(--black);">Shop Kids</a>
   </div>
   <div class="kids-photos">
+    <div class="kids-photo"><div class="kp-img" style="background-image:url('./images/1I4A6844.jpg');background-size:cover;background-position:center;width:100%;height:100%;"></div></div>
     <div class="kids-photo"><div class="kp-img" style="background-image:url('./images/1I4A6853.jpg');background-size:cover;background-position:center;width:100%;height:100%;"></div></div>
-    <div class="kids-photo"><div class="kp-img" style="background-image:url('./images/1I4A7128.jpg');background-size:cover;background-position:center;width:100%;height:100%;"></div></div>
     <div class="kids-photo wide"><div class="kp-img" style="background-image:url('./images/1I4A6882.jpg');background-size:cover;background-position:center;width:100%;height:100%;"></div></div>
   </div>
 </div>
@@ -808,3 +814,4 @@
 
 </body>
 </html>
+
