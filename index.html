@@ -550,8 +550,316 @@
     .yellow-strip { padding: 40px 24px; }
   }
 </style>
+
+<style>
+
+  /* ─────────── SCROLL-DRIVEN LANDING ─────────── */
+  :root {
+    --landing-height: 500vh; /* 5 screens of scroll to complete animation */
+  }
+
+  .landing-spacer {
+    height: var(--landing-height);
+    position: relative;
+    z-index: 1;
+    background: var(--black);
+  }
+
+  .landing-stage {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    width: 100%;
+    overflow: hidden;
+    background: var(--black);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .landing-field {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(to bottom, transparent 0%, transparent 94%, rgba(245, 194, 0, 0.08) 94%, rgba(245, 194, 0, 0.08) 95%, transparent 95%),
+      linear-gradient(to bottom, transparent 0%, transparent 79%, rgba(245, 194, 0, 0.06) 79%, rgba(245, 194, 0, 0.06) 80%, transparent 80%),
+      linear-gradient(to bottom, transparent 0%, transparent 64%, rgba(245, 194, 0, 0.05) 64%, rgba(245, 194, 0, 0.05) 65%, transparent 65%),
+      linear-gradient(to bottom, transparent 0%, transparent 49%, rgba(245, 194, 0, 0.05) 49%, rgba(245, 194, 0, 0.05) 50%, transparent 50%),
+      linear-gradient(to bottom, transparent 0%, transparent 34%, rgba(245, 194, 0, 0.06) 34%, rgba(245, 194, 0, 0.06) 35%, transparent 35%),
+      linear-gradient(to bottom, transparent 0%, transparent 19%, rgba(245, 194, 0, 0.08) 19%, rgba(245, 194, 0, 0.08) 20%, transparent 20%);
+    opacity: 0;
+    transition: opacity 0.1s linear;
+  }
+
+  .landing-logo {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 280px;
+    height: auto;
+    z-index: 3;
+    opacity: 0;
+    transition: transform 0.1s linear, opacity 0.1s linear;
+  }
+
+  .landing-logo img {
+    width: 100%;
+    height: auto;
+    display: block;
+    mix-blend-mode: screen;
+    filter: invert(1) drop-shadow(0 0 40px rgba(245, 194, 0, 0.25));
+    clip-path: polygon(0 100%, 0 100%, 0 100%, 0 100%);
+    transition: clip-path 0.1s linear;
+  }
+
+  .landing-streak {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 2px;
+    height: 0;
+    background: linear-gradient(to top, transparent 0%, var(--yellow) 50%, transparent 100%);
+    transform: translateX(-50%);
+    opacity: 0;
+    transition: height 0.1s linear, opacity 0.1s linear;
+  }
+
+  .landing-hint {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 9px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: rgba(245, 194, 0, 0.5);
+    font-weight: 400;
+    z-index: 10;
+    pointer-events: none;
+    animation: hintBounce 2s ease-in-out infinite;
+  }
+
+  @keyframes hintBounce {
+    0%, 100% { transform: translate(-50%, 0); opacity: 0.5; }
+    50% { transform: translate(-50%, 6px); opacity: 0.8; }
+  }
+
+  .landing-hint.faded { opacity: 0; animation: none; transition: opacity 0.3s; }
+
+  @media (max-width: 768px) {
+    .landing-logo { width: 200px; }
+  }
+
+
+  /* ── EVENTS ──────────────────────────────────────────────────────── */
+  .events {
+    background: var(--black);
+    color: var(--white);
+    padding: 120px 40px;
+    text-align: center;
+  }
+  .events .section-label { color: var(--gray); }
+  .events-split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    margin-top: 48px;
+    max-width: 1100px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .event-block {
+    background: var(--offblack);
+    padding: 60px 40px;
+    border: 1px solid rgba(245, 194, 0, 0.15);
+    transition: border-color 0.3s, background 0.3s;
+  }
+  .event-block:hover {
+    border-color: var(--yellow);
+    background: #1a1a1a;
+  }
+  .event-block h3 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 42px;
+    letter-spacing: 0.08em;
+    color: var(--yellow);
+    margin-bottom: 16px;
+  }
+  .event-block p {
+    font-size: 14px;
+    color: var(--light);
+    line-height: 1.7;
+    margin-bottom: 24px;
+  }
+  .event-coming {
+    display: inline-block;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--yellow);
+    padding: 8px 18px;
+    border: 1px solid var(--yellow);
+    border-radius: 40px;
+  }
+  .events-signup {
+    margin-top: 56px;
+    font-size: 13px;
+    color: var(--light);
+    letter-spacing: 0.06em;
+  }
+  .events-signup a {
+    color: var(--yellow);
+    border-bottom: 1px solid var(--yellow);
+    padding-bottom: 2px;
+    transition: opacity 0.2s;
+  }
+  .events-signup a:hover { opacity: 0.7; }
+
+  /* ── GALLERY ─────────────────────────────────────────────────────── */
+  .gallery {
+    background: var(--black);
+    padding: 100px 40px;
+  }
+  .gallery-header {
+    text-align: center;
+    margin-bottom: 56px;
+  }
+  .gallery-header .section-label { color: var(--gray); }
+  .gallery-header .section-title { color: var(--white); margin: 0 auto; }
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 4px;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+  .gallery-item {
+    aspect-ratio: 1;
+    overflow: hidden;
+    position: relative;
+    cursor: pointer;
+  }
+  .gallery-item .g-img {
+    width: 100%;
+    height: 100%;
+    transition: transform 0.6s ease, filter 0.3s;
+  }
+  .gallery-item:hover .g-img {
+    transform: scale(1.06);
+    filter: brightness(1.1);
+  }
+  .gallery-item.tall { grid-row: span 2; aspect-ratio: 1/2; }
+  .gallery-item.wide { grid-column: span 2; aspect-ratio: 2/1; }
+
+  /* ── LINKS ───────────────────────────────────────────────────────── */
+  .links {
+    background: var(--yellow);
+    color: var(--black);
+    padding: 120px 40px;
+    text-align: center;
+  }
+  .links .section-label { color: rgba(0,0,0,0.5); }
+  .links .section-title { color: var(--black); margin: 0 auto 16px; }
+  .links-intro {
+    font-size: 15px;
+    color: rgba(0,0,0,0.7);
+    max-width: 500px;
+    margin: 0 auto 48px;
+    line-height: 1.7;
+  }
+  .links-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 14px;
+    max-width: 640px;
+    margin: 0 auto;
+  }
+  .link-card {
+    background: var(--black);
+    color: var(--yellow);
+    padding: 20px 24px;
+    border-radius: 50px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    transition: opacity 0.2s, transform 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+  .link-card:hover { opacity: 0.85; transform: translateY(-2px); }
+  .link-card.placeholder {
+    background: transparent;
+    color: rgba(0,0,0,0.4);
+    border: 2px dashed rgba(0,0,0,0.2);
+    cursor: default;
+  }
+  .link-card.placeholder:hover { transform: none; opacity: 1; }
+
+  /* ── LEGAL / PRIVACY ──────────────────────────────────────────────── */
+  .legal-section {
+    background: var(--offblack);
+    color: var(--light);
+    padding: 80px 40px;
+  }
+  .legal-section:nth-of-type(even) { background: var(--black); }
+  .legal-container {
+    max-width: 720px;
+    margin: 0 auto;
+  }
+  .legal-section h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 36px;
+    letter-spacing: 0.05em;
+    color: var(--yellow);
+    margin-bottom: 24px;
+  }
+  .legal-section h3 {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--white);
+    margin: 28px 0 10px;
+  }
+  .legal-section p {
+    font-size: 14px;
+    line-height: 1.75;
+    margin-bottom: 14px;
+    color: rgba(255,255,255,0.65);
+  }
+
+  @media (max-width: 768px) {
+    .events { padding: 72px 20px; }
+    .events-split { grid-template-columns: 1fr; }
+    .event-block { padding: 40px 24px; }
+    .gallery { padding: 60px 12px; }
+    .gallery-grid { grid-template-columns: repeat(2, 1fr); }
+    .gallery-item.wide { grid-column: span 2; }
+    .gallery-item.tall { grid-row: auto; aspect-ratio: 1; }
+    .links { padding: 72px 24px; }
+    .legal-section { padding: 56px 24px; }
+  }
+</style>
 </head>
 <body>
+
+<!-- ─────────── SCROLL-DRIVEN LANDING ─────────── -->
+<div class="landing-spacer" id="landingSpacer">
+  <div class="landing-stage" id="landingStage">
+    <div class="landing-field" id="landingField"></div>
+    <div class="landing-streak" id="landingStreak"></div>
+    <div class="landing-logo" id="landingLogo">
+      <img src="./images/9_route_black_letters1.jpg" alt="9 Route">
+    </div>
+    <div class="landing-hint" id="landingHint">scroll to begin</div>
+  </div>
+</div>
+
+
 
 <!-- NAV -->
 <nav id="nav">
@@ -559,10 +867,10 @@
     <a href="#"><img src="./images/9_route_logo.png" alt="9 Route"></a>
   </div>
   <ul class="nav-links">
-    <li><a href="#collection">Collection</a></li>
-    <li><a href="#mission">Mission</a></li>
-    <li><a href="#kids">Kids</a></li>
-    <li><a href="#about">About</a></li>
+    <li><a href="#about">About & Shop</a></li>
+    <li><a href="#events">Events</a></li>
+    <li><a href="#gallery">Gallery</a></li>
+    <li><a href="#links">Links</a></li>
   </ul>
   <a class="nav-cta" href="#collection">Shop Now</a>
 </nav>
@@ -597,7 +905,7 @@
 
   <div class="hero-text-block">
     <p class="hero-eyebrow">Fort Worth, TX &nbsp;·&nbsp; Est. 2025</p>
-    <h1 class="hero-title">KNOW<br>YOUR<br>ROUTE ↑</h1>
+    <h1 class="hero-title">9<br>ROUTE</h1>
     <p class="hero-sub">Purpose-driven apparel for those who know where they're headed. Wear your identity. Live your definition.</p>
     <div class="hero-actions">
       <a class="btn-primary" href="#collection">Shop the Collection</a>
@@ -768,11 +1076,127 @@
 <div class="dream">
   <div class="dream-bg" style="background-image:url('./images/1I4A6882.jpg');background-size:cover;background-position:center;width:100%;height:100%;"></div>
   <div class="dream-over">
-    <div class="dream-text">KNOW YOUR ROUTE ↑</div>
+    <div class="dream-text">9ROUTE</div>
     <p class="dream-sub">9Route · Fort Worth, Texas · Est. 2025</p>
     <a class="btn-primary" href="#collection">Shop Now</a>
   </div>
 </div>
+
+
+
+<!-- ─────────── EVENTS & TRAININGS ─────────── -->
+<section class="events" id="events">
+  <p class="section-label">The Schedule</p>
+  <h2 class="section-title">EVENTS & TRAININGS</h2>
+  <div class="events-split">
+    <div class="event-block">
+      <h3>EVENTS</h3>
+      <p>Community meetups, shop drops, and brand moments happening in Fort Worth and beyond. Where the route comes to life.</p>
+      <span class="event-coming">Coming Soon</span>
+    </div>
+    <div class="event-block">
+      <h3>TRAININGS</h3>
+      <p>Position-specific football training built by a founder who ran the route himself. Designed for athletes who are ready to move with purpose.</p>
+      <span class="event-coming">Coming Soon</span>
+    </div>
+  </div>
+  <p class="events-signup">Want early access? <a href="#links">Reach out through our links</a></p>
+</section>
+
+<!-- ─────────── GALLERY ─────────── -->
+<section class="gallery" id="gallery">
+  <div class="gallery-header">
+    <p class="section-label">The Archive</p>
+    <h2 class="section-title">GALLERY</h2>
+  </div>
+  <div class="gallery-grid">
+    <div class="gallery-item wide">
+      <div class="g-img" style="background-image:url('./images/1I4A6910.jpg');background-size:cover;background-position:center;"></div>
+    </div>
+    <div class="gallery-item">
+      <div class="g-img" style="background-image:url('./images/1I4A6924.jpg');background-size:cover;background-position:center;"></div>
+    </div>
+    <div class="gallery-item">
+      <div class="g-img" style="background-image:url('./images/1I4A6949.jpg');background-size:cover;background-position:center;"></div>
+    </div>
+    <div class="gallery-item">
+      <div class="g-img" style="background-image:url('./images/1I4A6844.jpg');background-size:cover;background-position:center;"></div>
+    </div>
+    <div class="gallery-item">
+      <div class="g-img" style="background-image:url('./images/1I4A6853.jpg');background-size:cover;background-position:center;"></div>
+    </div>
+    <div class="gallery-item">
+      <div class="g-img" style="background-image:url('./images/1I4A6882.jpg');background-size:cover;background-position:center;"></div>
+    </div>
+    <div class="gallery-item">
+      <div class="g-img" style="background-image:url('./images/1I4A6941.JPG');background-size:cover;background-position:center;"></div>
+    </div>
+    <div class="gallery-item">
+      <div class="g-img" style="background-image:url('./images/1I4A6976.jpg');background-size:cover;background-position:center;"></div>
+    </div>
+    <div class="gallery-item">
+      <div class="g-img" style="background-image:url('./images/1I4A6990.jpg');background-size:cover;background-position:center;"></div>
+    </div>
+    <div class="gallery-item">
+      <div class="g-img" style="background-image:url('./images/1I4A7000.jpg');background-size:cover;background-position:center;"></div>
+    </div>
+    <div class="gallery-item">
+      <div class="g-img" style="background-image:url('./images/1I4A7128.jpg');background-size:cover;background-position:center;"></div>
+    </div>
+    <div class="gallery-item">
+      <div class="g-img" style="background-image:url('./images/1I4A7128_2.JPG');background-size:cover;background-position:center;"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────── LINKS ─────────── -->
+<section class="links" id="links">
+  <p class="section-label">Stay Connected</p>
+  <h2 class="section-title">LINKS</h2>
+  <p class="links-intro">Everywhere 9ROUTE lives. Follow the route.</p>
+  <div class="links-grid">
+    <a class="link-card" href="https://www.linkedin.com/in/daron-lawrence-progress2021" target="_blank">LinkedIn</a>
+    <div class="link-card placeholder">Instagram — soon</div>
+    <div class="link-card placeholder">TikTok — soon</div>
+    <div class="link-card placeholder">Shop — soon</div>
+    <div class="link-card placeholder">Email — soon</div>
+    <div class="link-card placeholder">Contact — soon</div>
+  </div>
+</section>
+
+<!-- ─────────── PRIVACY ─────────── -->
+<section class="legal-section" id="privacy">
+  <div class="legal-container">
+    <h2>PRIVACY STATEMENT</h2>
+    <p>9ROUTE LLC respects the privacy of every person who visits this site, shops with us, or reaches out to connect. This statement outlines how we collect, use, and protect your information.</p>
+    <h3>What We Collect</h3>
+    <p>When you interact with 9ROUTE — whether browsing, purchasing, or contacting us — we may collect basic information like your name, email address, shipping address, and payment details (processed securely through third-party providers). We also collect anonymous analytics about site usage.</p>
+    <h3>How We Use It</h3>
+    <p>Your information is used to fulfill orders, respond to inquiries, improve the site, and occasionally share updates about new drops, events, or trainings. We never sell your data.</p>
+    <h3>Your Rights</h3>
+    <p>You can request access to, correction of, or deletion of your information at any time by contacting us directly. We'll respond within a reasonable timeframe.</p>
+    <h3>Cookies</h3>
+    <p>Like most websites, 9ROUTE uses cookies to improve your experience. You can disable cookies in your browser settings, though some site features may not work as expected.</p>
+  </div>
+</section>
+
+<!-- ─────────── LEGAL / TERMS ─────────── -->
+<section class="legal-section" id="legal">
+  <div class="legal-container">
+    <h2>LEGAL & TERMS</h2>
+    <p>By using this site, you agree to the following terms. 9ROUTE LLC is a Texas-registered limited liability company (File No. 0806226045) based in Fort Worth, Texas.</p>
+    <h3>Intellectual Property</h3>
+    <p>All content on this site — including the 9ROUTE brand mark, logos, photography, copy, and apparel designs — is the property of 9ROUTE LLC. Reproduction, redistribution, or commercial use without written permission is prohibited.</p>
+    <h3>Product & Purchases</h3>
+    <p>All product descriptions, pricing, and availability are subject to change without notice. Orders are fulfilled based on current stock and shipping schedules.</p>
+    <h3>Limitation of Liability</h3>
+    <p>9ROUTE LLC is not liable for any indirect, incidental, or consequential damages arising from use of this site or its products. All sales are final unless otherwise specified.</p>
+    <h3>Governing Law</h3>
+    <p>These terms are governed by the laws of the State of Texas. Any disputes will be resolved in the appropriate courts of Tarrant County, Texas.</p>
+    <h3>Contact</h3>
+    <p>For legal inquiries, reach out through the <a href="#links" style="color: var(--yellow); border-bottom: 1px solid var(--yellow);">Links</a> section above.</p>
+  </div>
+</section>
 
 <!-- FOOTER — yellow bg -->
 <footer>
@@ -812,6 +1236,107 @@
   });
 </script>
 
-</body>
-</html>
 
+
+<script>
+  // Scroll-driven landing animation
+  (function() {
+    const spacer = document.getElementById('landingSpacer');
+    const stage = document.getElementById('landingStage');
+    const field = document.getElementById('landingField');
+    const logo = document.getElementById('landingLogo');
+    const logoImg = logo.querySelector('img');
+    const streak = document.getElementById('landingStreak');
+    const hint = document.getElementById('landingHint');
+
+    const brushFrames = [
+      'polygon(0 100%, 0 100%, 0 100%, 0 100%)',
+      'polygon(0 100%, 25% 100%, 15% 70%, 0 85%)',
+      'polygon(0 100%, 50% 100%, 40% 40%, 0 60%)',
+      'polygon(0 100%, 75% 100%, 70% 20%, 0 35%)',
+      'polygon(0 100%, 100% 100%, 95% 5%, 0 15%)',
+      'polygon(0 0, 100% 0, 100% 100%, 0 100%)'
+    ];
+
+    function interpolateClip(progress) {
+      const idx = Math.min(Math.floor(progress * (brushFrames.length - 1)), brushFrames.length - 2);
+      return brushFrames[idx + 1];
+    }
+
+    function lerp(a, b, t) { return a + (b - a) * t; }
+
+    function update() {
+      const rect = spacer.getBoundingClientRect();
+      const spacerHeight = spacer.offsetHeight - window.innerHeight;
+      const scrolled = Math.max(0, -rect.top);
+      const progress = Math.min(1, Math.max(0, scrolled / spacerHeight));
+
+      // Hide hint as soon as they start scrolling
+      if (progress > 0.02) hint.classList.add('faded');
+      else hint.classList.remove('faded');
+
+      // Phase 1 (0-0.15): Logo fades in
+      const fadeIn = Math.min(1, progress / 0.15);
+      const logoOpacity = fadeIn;
+      const logoScale = lerp(0.92, 1, fadeIn);
+
+      // Phase 2 (0.1-0.45): Brushstroke paints the logo
+      const brushProgress = Math.min(1, Math.max(0, (progress - 0.1) / 0.35));
+      logoImg.style.clipPath = interpolateClip(brushProgress);
+
+      // Phase 3 (0.3-0.6): Field yardlines appear
+      const fieldProgress = Math.min(1, Math.max(0, (progress - 0.3) / 0.3));
+      field.style.opacity = fieldProgress;
+
+      // Phase 4 (0.6-1.0): Logo rises + streak
+      const riseProgress = Math.min(1, Math.max(0, (progress - 0.6) / 0.4));
+      const riseY = lerp(-50, -400, riseProgress);
+      const riseScale = lerp(1, 2, riseProgress);
+      const riseOpacity = riseProgress < 0.7 ? 1 : lerp(1, 0, (riseProgress - 0.7) / 0.3);
+
+      logo.style.transform = `translate(-50%, ${riseY}%) scale(${riseScale})`;
+      logo.style.opacity = progress < 0.6 ? logoOpacity : riseOpacity;
+
+      if (progress < 0.6) {
+        logo.style.transform = `translate(-50%, -50%) scale(${logoScale})`;
+      }
+
+      // Streak
+      const streakOpacity = riseProgress > 0 && riseProgress < 0.9 ? Math.min(1, riseProgress * 2) : 0;
+      const streakHeight = riseProgress * 100;
+      streak.style.height = `${streakHeight}vh`;
+      streak.style.opacity = streakOpacity;
+
+      // Background transitions to yellow in final phase (0.85-1.0)
+      const bgProgress = Math.min(1, Math.max(0, (progress - 0.85) / 0.15));
+      if (bgProgress > 0) {
+        const colors = [
+          [10, 10, 10],      // black
+          [58, 47, 0],       // deep amber
+          [168, 134, 0],     // gold
+          [245, 194, 0]      // yellow
+        ];
+        const stage3 = bgProgress * 3;
+        const seg = Math.min(2, Math.floor(stage3));
+        const segT = stage3 - seg;
+        const c1 = colors[seg];
+        const c2 = colors[seg + 1];
+        const r = Math.round(lerp(c1[0], c2[0], segT));
+        const g = Math.round(lerp(c1[1], c2[1], segT));
+        const b = Math.round(lerp(c1[2], c2[2], segT));
+        stage.style.background = `rgb(${r}, ${g}, ${b})`;
+        spacer.style.background = `rgb(${r}, ${g}, ${b})`;
+      } else {
+        stage.style.background = 'var(--black)';
+        spacer.style.background = 'var(--black)';
+      }
+    }
+
+    window.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update);
+    update();
+  })();
+</script>
+
+</body>
+ </html>
