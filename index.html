@@ -429,7 +429,7 @@
     font-size: 16px;
     font-weight: 300;
     color: #555;
-    max-width: 520px;
+    max-width: 720px;
     margin: 0 auto 48px;
     line-height: 1.75;
   }
@@ -1169,11 +1169,8 @@
 <!-- MISSION — white bg, original copy -->
 <section class="mission" id="mission">
   <p class="section-label">Our Purpose</p>
-  <div class="mission-quote">Welcome to 9ROUTE — Where Hustle Meets Style.
-At 9ROUTE, we’re all about the grind, the game, and the gear that gets you there. Our name symbolizes ambition, speed, and never looking back.
-We outfit the next generation of athletes with high-performance, standout apparel built for youth and teen competitors.
-Whether you’re chasing greatness on game day or leveling up your everyday fit, 9ROUTE is for those who go long, go hard, and never stop going.</div>
-  <p class="mission-body"</p>
+  <div class="mission-quote">WELCOME TO 9ROUTE — WHERE HUSTLE MEETS STYLE.</div>
+  <p class="mission-body">At 9Route, we’re all about the grind, the game, and the gear that gets you there. Our name symbolizes ambition, speed, and never looking back. We outfit the next generation of athletes with high-performance, standout apparel built for youth and teen competitors. Whether you’re chasing greatness on game day or leveling up your everyday fit, 9Route is for those who go long, go hard, and never stop going.</p>
   <a class="btn-dark" href="#collection">Shop the Collection</a>
 </section>
 
@@ -1497,23 +1494,40 @@ Whether you’re chasing greatness on game day or leveling up your everyday fit,
       return;
     }
 
-    // Build mailto body as fallback
-    // REPLACE THIS with Formspree, Google Forms, or your preferred service
-    const subject = encodeURIComponent('9ROUTE - New Registration: ' + firstName + ' ' + lastName);
-    const body = encodeURIComponent(
-      'Name: ' + firstName + ' ' + lastName + '\n' +
-      'Email: ' + email + '\n' +
-      'Phone: ' + (phone || 'Not provided') + '\n' +
-      'Interest: ' + interest + '\n' +
-      'Message: ' + (message || 'None') + '\n'
-    );
+    // Disable button while sending
+    const btn = document.querySelector('.form-submit button');
+    btn.textContent = 'SENDING...';
+    btn.disabled = true;
 
-    // Send via mailto to DaRon (replace with actual email)
-    window.location.href = 'mailto:dlaw@go9route.com?subject=' + subject + '&body=' + body;
+    // Submit to PHP handler
+    const formData = new FormData();
+    formData.append('firstName', firstName);
+    formData.append('lastName', lastName);
+    formData.append('email', email);
+    formData.append('phone', phone);
+    formData.append('interest', interest);
+    formData.append('message', message);
 
-    // Show success state
-    document.getElementById('eventsForm').style.display = 'none';
-    document.getElementById('formSuccess').style.display = 'block';
+    fetch('./form-handler.php', {
+      method: 'POST',
+      body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        document.getElementById('eventsForm').style.display = 'none';
+        document.getElementById('formSuccess').style.display = 'block';
+      } else {
+        alert('Something went wrong. Please try again or reach out through our links.');
+        btn.textContent = 'SIGN ME UP';
+        btn.disabled = false;
+      }
+    })
+    .catch(() => {
+      alert('Something went wrong. Please try again or reach out through our links.');
+      btn.textContent = 'SIGN ME UP';
+      btn.disabled = false;
+    });
   }
 </script>
 
@@ -1620,4 +1634,4 @@ Whether you’re chasing greatness on game day or leveling up your everyday fit,
 </script>
 
 </body>
-                                           </html>
+ </html>
