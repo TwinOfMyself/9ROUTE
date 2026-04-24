@@ -120,97 +120,17 @@
     overflow: hidden;
   }
 
-  .hero-canvas svg {
+  .hero-video {
     position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-  }
-
-  /* Animated stripes */
-  .stripe {
-    fill: none;
-    stroke: rgba(0,0,0,0.055);
-    stroke-width: 1.5;
-  }
-
-  .stripe-1 { animation: drift1 18s ease-in-out infinite; }
-  .stripe-2 { animation: drift2 22s ease-in-out infinite; }
-  .stripe-3 { animation: drift3 16s ease-in-out infinite; }
-  .stripe-4 { animation: drift4 20s ease-in-out infinite; }
-  .stripe-5 { animation: drift5 25s ease-in-out infinite; }
-
-  @keyframes drift1 {
-    0%,100% { transform: translateY(0) rotate(0deg); }
-    50% { transform: translateY(-40px) rotate(0.5deg); }
-  }
-  @keyframes drift2 {
-    0%,100% { transform: translateX(0) rotate(0deg); }
-    50% { transform: translateX(30px) rotate(-0.3deg); }
-  }
-  @keyframes drift3 {
-    0%,100% { transform: translateY(0) translateX(0); }
-    33% { transform: translateY(20px) translateX(-20px); }
-    66% { transform: translateY(-30px) translateX(15px); }
-  }
-  @keyframes drift4 {
-    0%,100% { transform: skewX(0deg) translateY(0); }
-    50% { transform: skewX(0.5deg) translateY(25px); }
-  }
-  @keyframes drift5 {
-    0%,100% { transform: translateX(0) rotate(0); }
-    50% { transform: translateX(-40px) rotate(-0.4deg); }
-  }
-
-  /* Floating dot grid */
-  .dot-field {
-    position: absolute;
-    inset: 0;
-    background-image: radial-gradient(circle, rgba(0,0,0,0.07) 1px, transparent 1px);
-    background-size: 36px 36px;
-    animation: dotDrift 30s linear infinite;
-  }
-
-  @keyframes dotDrift {
-    from { background-position: 0 0; }
-    to { background-position: 72px 72px; }
-  }
-
-  /* Pulsing circle accent */
-  .hero-pulse {
-    position: absolute;
-    bottom: -120px;
-    right: -120px;
-    width: 600px;
-    height: 600px;
-    border-radius: 50%;
-    border: 2px solid rgba(0,0,0,0.06);
-    animation: pulse 8s ease-in-out infinite;
-  }
-  .hero-pulse-2 {
-    position: absolute;
-    bottom: -200px;
-    right: -200px;
-    width: 800px;
-    height: 800px;
-    border-radius: 50%;
-    border: 1.5px solid rgba(0,0,0,0.04);
-    animation: pulse 8s ease-in-out infinite 1.5s;
-  }
-  .hero-pulse-3 {
-    position: absolute;
-    bottom: -300px;
-    right: -300px;
-    width: 1000px;
-    height: 1000px;
-    border-radius: 50%;
-    border: 1px solid rgba(0,0,0,0.025);
-    animation: pulse 8s ease-in-out infinite 3s;
-  }
-
-  @keyframes pulse {
-    0%,100% { transform: scale(1); opacity: 1; }
-    50% { transform: scale(1.04); opacity: 0.7; }
+    top: 50%;
+    left: 50%;
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    transform: translate(-50%, -50%);
+    object-fit: cover;
+    opacity: 0.18;
   }
 
   .hero-text-block {
@@ -891,29 +811,11 @@
 <!-- HERO — yellow bg with animated moving visual -->
 <div class="hero">
 
-  <!-- Moving background visual -->
+  <!-- Video background -->
   <div class="hero-canvas">
-    <div class="dot-field"></div>
-    <div class="hero-pulse"></div>
-    <div class="hero-pulse-2"></div>
-    <div class="hero-pulse-3"></div>
-    <svg viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
-      <!-- Diagonal lines drifting slowly -->
-      <line class="stripe stripe-1" x1="-200" y1="0" x2="800" y2="900"/>
-      <line class="stripe stripe-2" x1="100" y1="0" x2="1100" y2="900"/>
-      <line class="stripe stripe-3" x1="400" y1="0" x2="1400" y2="900"/>
-      <line class="stripe stripe-4" x1="700" y1="0" x2="1700" y2="900"/>
-      <line class="stripe stripe-5" x1="-500" y1="0" x2="500" y2="900"/>
-      <!-- Horizontal accent lines -->
-      <line class="stripe stripe-2" x1="0" y1="250" x2="1440" y2="220" stroke-width="1"/>
-      <line class="stripe stripe-4" x1="0" y1="550" x2="1440" y2="580" stroke-width="0.8"/>
-      <!-- Large arch shape -->
-      <path class="stripe stripe-3" d="M -100 900 Q 720 -200 1540 900" stroke-width="1.2"/>
-      <path class="stripe stripe-1" d="M -100 900 Q 720 100 1540 900" stroke-width="0.8"/>
-      <!-- Corner geometric -->
-      <rect class="stripe stripe-5" x="1100" y="-100" width="400" height="400" rx="0" transform="rotate(15 1300 100)"/>
-      <rect class="stripe stripe-2" x="1150" y="-80" width="320" height="320" rx="0" transform="rotate(15 1310 80)"/>
-    </svg>
+    <video autoplay muted loop playsinline class="hero-video">
+      <source src="./videos/hero-bg.mp4" type="video/mp4">
+    </video>
   </div>
 
   <div class="hero-text-block">
