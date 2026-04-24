@@ -609,8 +609,7 @@
     display: block;
     mix-blend-mode: screen;
     filter: invert(1) drop-shadow(0 0 40px rgba(245, 194, 0, 0.25));
-    clip-path: polygon(0 100%, 0 100%, 0 100%, 0 100%);
-    transition: clip-path 0.1s linear;
+    transition: opacity 0.1s linear;
   }
 
   .landing-streak {
@@ -1038,13 +1037,6 @@
   </div>
 
   <div class="hero-image-block">
-    <!--
-      PHOTO INSTRUCTIONS:
-      1. Create an "images" folder in your GitHub repo
-      2. Upload all photos into it
-      3. For each .ph element, add to its style:
-         background-image: url('./images/FILENAME.jpg'); background-size: cover; background-position: center;
-    -->
     <div style="width:100%;height:100%;min-height:480px;background-image:url('./images/1I4A6910.jpg');background-size:cover;background-position:top;"></div>
   </div>
 </div>
@@ -1170,7 +1162,7 @@
 <section class="mission" id="mission">
   <p class="section-label">Our Purpose</p>
   <div class="mission-quote">WELCOME TO 9ROUTE — WHERE HUSTLE MEETS STYLE.</div>
-  <p class="mission-body">At 9Route, we’re all about the grind, the game, and the gear that gets you there. Our name symbolizes ambition, speed, and never looking back. We outfit the next generation of athletes with high-performance, standout apparel built for youth and teen competitors. Whether you’re chasing greatness on game day or leveling up your everyday fit, 9Route is for those who go long, go hard, and never stop going.</p>
+  <p class="mission-body">At 9Route, we're all about the grind, the game, and the gear that gets you there. Our name symbolizes ambition, speed, and never looking back. We outfit the next generation of athletes with high-performance, standout apparel built for youth and teen competitors. Whether you're chasing greatness on game day or leveling up your everyday fit, 9Route is for those who go long, go hard, and never stop going.</p>
   <a class="btn-dark" href="#collection">Shop the Collection</a>
 </section>
 
@@ -1540,20 +1532,6 @@
     const streak = document.getElementById('landingStreak');
     const hint = document.getElementById('landingHint');
 
-    const brushFrames = [
-      'polygon(0 100%, 0 100%, 0 100%, 0 100%)',
-      'polygon(0 100%, 25% 100%, 15% 70%, 0 85%)',
-      'polygon(0 100%, 50% 100%, 40% 40%, 0 60%)',
-      'polygon(0 100%, 75% 100%, 70% 20%, 0 35%)',
-      'polygon(0 100%, 100% 100%, 95% 5%, 0 15%)',
-      'polygon(0 0, 100% 0, 100% 100%, 0 100%)'
-    ];
-
-    function interpolateClip(progress) {
-      const idx = Math.min(Math.floor(progress * (brushFrames.length - 1)), brushFrames.length - 2);
-      return brushFrames[idx + 1];
-    }
-
     function lerp(a, b, t) { return a + (b - a) * t; }
 
     function update() {
@@ -1571,9 +1549,8 @@
       const logoOpacity = fadeIn;
       const logoScale = lerp(0.92, 1, fadeIn);
 
-      // Phase 2 (0.1-0.45): Brushstroke paints the logo
-      const brushProgress = Math.min(1, Math.max(0, (progress - 0.1) / 0.35));
-      logoImg.style.clipPath = interpolateClip(brushProgress);
+      // Phase 2 (0.1-0.45): Logo is fully visible (no painting animation)
+      logoImg.style.opacity = fadeIn;
 
       // Phase 3 (0.3-0.6): Field yardlines appear
       const fieldProgress = Math.min(1, Math.max(0, (progress - 0.3) / 0.3));
@@ -1630,4 +1607,4 @@
 </script>
 
 </body>
- </html>
+</html>
